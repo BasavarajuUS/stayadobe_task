@@ -1,30 +1,38 @@
 (function($) {
     $(document).ready(function() {
-        console.log($.fn.jquery);
-        if(!$("input[name='buildings']:checkbox:checked").length){
-            $($("#id_residents option")).hide();
+    $($("#id_residents option")).hide();
+        var selectedBuildings = $('input:checkbox:checked').map(function() {
+            return this.value;
+        }).get();
+
+        if(selectedBuildings.length){
+            $.get( "/building/get-residents", {ids: selectedBuildings}).done(function(response){
+                response.residents.forEach(function(resident){
+                   $($("#id_residents option[value="+resident.id+"]")).show();
+                })
+            });
         }
+
         $("#id_buildings li").on('change', function(event) {
             var buildingId = event.target.getAttribute('value');
-            $.get( "/building/get-residents", {id: buildingId}).done(function(residents){
+            $.get( "/building/get-residents", {ids: [buildingId]}).done(function(response){
                 if (event.target.checked){
-                    addResidentsToAvailableResidents(residents);
+                    addResidentsToAvailableResidents(response);
                 }else{
-                    removeResidents(residents);
+                    removeResidents(response);
                 }
             });
         });
 
-        function addResidentsToAvailableResidents(residents){
-            residents.res.forEach(function(resident){
+        function addResidentsToAvailableResidents(response){
+            response.residents.forEach(function(resident){
                $($("#id_residents option[value="+resident.id+"]")).show();
             })
         }
 
-        function removeResidents(residents){
+        function removeResidents(response){
             // update available residents
-            residents.res.forEach(function(resident){
-                $($("#id_residents option[value="+resident.id+"]")).trigger('click');
+            response.residents.forEach(function(resident){
                 $($("#id_residents option[value="+resident.id+"]")).hide();
             });
         }
