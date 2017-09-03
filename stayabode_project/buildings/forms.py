@@ -14,4 +14,9 @@ class EventForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(EventForm, self).__init__(*args, **kwargs)
-        self.fields['buildings'] = forms.ModelMultipleChoiceField(required=False, queryset=Building.objects.all(), widget=forms.CheckboxSelectMultiple())
+        self.fields['buildings'] = forms.ModelMultipleChoiceField(
+            required=False, queryset=Building.objects.all(), widget=forms.CheckboxSelectMultiple())
+
+    def clean_residents(self):
+        clean_residents = self.cleaned_data.get('residents').filter(building__in=self.cleaned_data['buildings'].all())
+        return clean_residents
