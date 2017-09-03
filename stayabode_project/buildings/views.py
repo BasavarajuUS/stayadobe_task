@@ -13,4 +13,4 @@ def get_residents(request):
     residents_list = list()
     for resident in residents:
         residents_list.append({'id': resident.id, 'title': '{0} {1}'.format(resident.first_name, resident.last_name)})
-    return JsonResponse({'res': residents_list})
+    return JsonResponse({'residents': residents_list})
