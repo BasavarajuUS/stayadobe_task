@@ -35,5 +35,5 @@ Project Setup
 
 Application
 -----------
-    1. Admin - http://127.0.0.1:5000/admin
+    1. Admin - http://127.0.0.1:8000/admin
 
